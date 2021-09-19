@@ -1,0 +1,17 @@
+#pragma once
+
+#define TIC_STATIC
+#define DEPRECATED
+#define LIBUSBP_STATIC (1)
+
+#define SOFTWARE_VERSION_STRING "1.07"
+#define SOFTWARE_VERSION_MAJOR 1
+#define SOFTWARE_VERSION_MINOR 07
+#define SOFTWARE_VERSION_PATCH 0
+
+#define SOFTWARE_YEAR "2020"
+
+#define DOCUMENTATION_URL "@DOCUMENTATION_URL@"
+
+#define CLI_NAME "ticcli"
+#define GUI_NAME "ticgui"
