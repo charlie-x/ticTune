@@ -134,7 +134,7 @@ ImPlotStyle::ImPlotStyle() {
 	LegendSpacing = ImVec2(5, 0);
 	MousePosPadding = ImVec2(10, 10);
 	AnnotationPadding = ImVec2(2, 2);
-	FitPadding = ImVec2(0, 0.01);
+	FitPadding = ImVec2(0, 0.01f);
 	PlotDefaultSize = ImVec2(400, 300);
 	PlotMinSize = ImVec2(200, 150);
 

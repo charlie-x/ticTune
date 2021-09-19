@@ -1,7 +1,7 @@
 // ticTune.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-// base range of device movement
-#define UPPER_RANGE		( 200 )
+// base range of device movement, @todo: move these to an imgui input
+#define UPPER_RANGE		(   200 )
 #define LOWER_RANGE		( -5500 )
 
 #define _USE_MATH_DEFINES
@@ -31,7 +31,7 @@
 #pragma comment(lib,"winusb.lib")
 
 
-// step mode
+// step mode, @todo pull from tic library
 
 static constexpr char stepModes[][20] = {
 	"Full step",
@@ -47,6 +47,7 @@ static constexpr char stepModes[][20] = {
 	"1/256 step"
 };
 
+// movement modes for slider
 enum class Modes {
 	mNONE,
 	mSIN,
@@ -57,39 +58,52 @@ enum class Modes {
 
 Modes mMode;
 
-// T825
+// T825 decay modes @tood check with TIC lib
 static constexpr char decayModes[][20] = {
 	"slow",
 	"mixed(d)",
 	"fast"
 };
 
+/// startup in borderless window, has to be at init
 bool bBorderless = false;
+
+// switch on vSync
 bool bVSync = true;
 
+// TIC library
 static tic::handle handle;
 static tic::variables vars;
 static tic::settings settings;
 
+// invert motor direction
 static bool bInvertMotor = false;
+
+// save changes to TICs onboard flash
 static bool bAutoUpdate = false;
+
+// flags if any settings were changed
 static bool bChanged = false;
+
+// use one value to set accel and deaccel
 static bool bOneAccel = true;
 
+// settings for stepper motor
 static int iMaxSpeed			= 28400000;
 static int iStartingSpeed		= 0;
 static int iMaxAcceleration		= 280000;
 static int iMaxDeceleration		= 280000;
 static int step_mode			= 0;
 static int decay_mode			= 0;
-static int current_limit = 0;
+static int current_limit		= 0;
 
+// function for ImGui setup
 int RenderGUI();
 bool SetupImgui();
 void  RenderLoop();
 bool CleanupImgui();
 
-// utility structure for realtime plot
+// utility structure for realtime plot + average, min and max tracking across buffer
 struct ScrollingBuffer {
 
 	int MaxSize;
@@ -162,7 +176,9 @@ extern "C" void usleep(__int64 usec)
 		CloseHandle(timer);
 	}
 }
-std::vector<tic::device> list;
+
+// moved this out of the function so we can use it in the GUI as a picker
+static std::vector<tic::device> list;
 
 // Opens a handle to a Tic that can be used for communication.
 //
@@ -193,6 +209,8 @@ tic::handle open_handle(const char* desired_serial_number = nullptr)
 
 int main()
 {
+
+	//build list of TIC connected
 	list = tic::list_connected_devices();
 
 	SetupImgui();
@@ -236,11 +254,13 @@ int main()
 	return 0;
 }
 
+// console vs windows subsystem
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	main();
 }
 
+// scale the ranges for the step mode selected
 int GetRange(int step_mode, const int base = UPPER_RANGE)
 {
 	switch (step_mode) {
@@ -601,13 +621,19 @@ int RenderGUI()
 			DONE
 		};
 
+		// which mode is trainer in
 		static TrainMode mTrainMode = TrainMode::NONE;
 
+		// training enabled
 		static bool bTraining = false;
 
+		// countdown timer in seconds for each train mode
 		static float iTrainTimer = 0;
+
+		// set when data collected for each mode is valid 
 		static bool bIdleDataValid = false, bEnergisedDataValid = false, bSlowDataValid = false, bFasterDataValid = false, bLoadDataValid = false;
 
+		// recorded min/max for each mode
 		static double idleMax = DBL_MIN, idleMin = DBL_MAX;
 		static double energisedMax = DBL_MIN, energisedMin = DBL_MAX;
 		static double slowMax = DBL_MIN, slowMin = DBL_MAX;
@@ -625,6 +651,7 @@ int RenderGUI()
 			bLoadDataValid = false;
 		}
 
+		// not using yet
 		static int iTorqueBias = 0;
 		static int iSpeedBias = 0;
 		static int iAccelBias = 0;
@@ -811,10 +838,11 @@ int RenderGUI()
 				break;
 			}
 		}
+		if (bTraining) {
+			int iCount = (int)(iTrainTimer - elapsedTime);
 
-		int iCount = (int)( iTrainTimer - elapsedTime );
-
-		if (ImGui::SliderInt("Time##time", &iCount, 0,(int)( iTrainTimer - elapsedTime ) )) {
+			if (ImGui::SliderInt("Time##time", &iCount, 0, (int)(iTrainTimer - elapsedTime))) {
+			}
 		}
 
 		if (bIdleDataValid) {
