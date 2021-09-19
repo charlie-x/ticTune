@@ -35,6 +35,13 @@
     <ClCompile Include="imgui\implot_items.cpp">
       <Filter>ImPlot</Filter>
     </ClCompile>
+    <ClCompile Include="ogl3imgui_support.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">

@@ -1,3 +1,5 @@
+#ifdef _USE_DIRECTX_12_
+
 #include <filesystem>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_win32.h"
@@ -589,3 +591,4 @@ bool CleanupImgui()
 
 	return true;
 }
+#endif

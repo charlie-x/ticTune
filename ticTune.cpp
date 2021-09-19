@@ -253,9 +253,10 @@ int main()
 
 	return 0;
 }
+extern int main();
 
 // console vs windows subsystem
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+int __stdcall WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	main();
 }
@@ -263,27 +264,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 // scale the ranges for the step mode selected
 int GetRange(int step_mode, const int base = UPPER_RANGE)
 {
-	switch (step_mode) {
-		case 0:
-			return base;
+	const int scaler[6] = { 1,2,4,8,16,32 };
 
-		case 1:
-			return base * 2;
-
-		case 2:
-			return base * 4;
-
-		case 3:
-			return base * 8;
-
-		case 4:
-			return base * 16;
-
-		case 5:
-			return base * 32;
-
-		default:
-			return base;
+	if (step_mode < 6 ) {
+		return (base * scaler[step_mode]);
+	} else {
+		return base;
 	}
 }
 
@@ -830,6 +816,7 @@ int RenderGUI()
 					// motors off
 					handle.deenergize();
 					_bEnableTIC = false;
+
 					break;
 				}
 
@@ -839,9 +826,10 @@ int RenderGUI()
 			}
 		}
 		if (bTraining) {
+
 			int iCount = (int)(iTrainTimer - elapsedTime);
 
-			if (ImGui::SliderInt("Time##time", &iCount, 0, (int)(iTrainTimer - elapsedTime))) {
+			if (ImGui::SliderInt("Time##time", &iCount, 0, (int)( iTrainTimer - elapsedTime ))) {
 			}
 		}
 
@@ -1044,12 +1032,15 @@ int RenderGUI()
 	ImGui::End();
 
 #ifndef _NDEBUG
+
 	static bool show_imgui_metrics       = false;
 	static bool show_implot_metrics      = false;
 	static bool show_imgui_style_editor  = false;
 	static bool show_implot_style_editor = false;
 	static bool show_implot_benchmark    = false;
+
 	if (show_imgui_metrics) {
+
 		ImGui::ShowMetricsWindow(&show_imgui_metrics);
 	}
 	if (show_implot_metrics) {
@@ -1069,6 +1060,7 @@ int RenderGUI()
 
 	ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(600, 750), ImGuiCond_FirstUseEver);
+
 	ImGui::Begin("Tools", 0, ImGuiWindowFlags_MenuBar);
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("Tools")) {
@@ -1082,6 +1074,7 @@ int RenderGUI()
 		ImGui::EndMenuBar();
 	}
 	ImGui::End();
+
 #endif
 
 	return 0;
