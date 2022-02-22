@@ -1,6 +1,7 @@
 // ticTune.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 // base range of device movement, @todo: move these to an imgui input
+
 #define UPPER_RANGE		(   200 )
 #define LOWER_RANGE		( -5500 )
 
