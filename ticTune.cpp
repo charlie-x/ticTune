@@ -5,6 +5,7 @@
 #define UPPER_RANGE		(   200 )
 #define LOWER_RANGE		( -5500 )
 
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 
@@ -178,7 +179,7 @@ extern "C" void usleep(__int64 usec)
 	}
 }
 
-// moved this out of the function so we can use it in the GUI as a picker
+// moved this out of the function so we can use it in the GUI as a picker @todo
 static std::vector<tic::device> list;
 
 // Opens a handle to a Tic that can be used for communication.
